@@ -1,0 +1,116 @@
+# World Cup 2026 — group stage configuration
+# Team identity = FIFA 3-letter code (same as CSV local/visitante).
+
+groups:
+  a: [MEX, RSA, KOR, CZE]
+  b: [CAN, BIH, QAT, SUI]
+  c: [BRA, MAR, HAI, SCO]
+  d: [USA, PAR, AUS, TUR]
+  e: [GER, CUW, CIV, ECU]
+  f: [NED, JPN, SWE, TUN]
+  g: [BEL, EGY, IRN, NZL]
+  h: [ESP, CPV, KSA, URU]
+  i: [FRA, SEN, IRQ, NOR]
+  j: [ARG, ALG, AUT, JOR]
+  k: [POR, COD, UZB, COL]
+  l: [ENG, CRO, GHA, PAN]
+
+display_names:
+  MEX: Mexico
+  RSA: South Africa
+  KOR: South Korea
+  CZE: Czechia
+  CAN: Canada
+  BIH: Bosnia and Herzegovina
+  QAT: Qatar
+  SUI: Switzerland
+  BRA: Brazil
+  MAR: Morocco
+  HAI: Haiti
+  SCO: Scotland
+  USA: United States
+  PAR: Paraguay
+  AUS: Australia
+  TUR: Turkey
+  GER: Germany
+  CUW: Curaçao
+  CIV: Côte d'Ivoire
+  ECU: Ecuador
+  NED: Netherlands
+  JPN: Japan
+  SWE: Sweden
+  TUN: Tunisia
+  BEL: Belgium
+  EGY: Egypt
+  IRN: Iran
+  NZL: New Zealand
+  ESP: Spain
+  CPV: Cape Verde
+  KSA: Saudi Arabia
+  URU: Uruguay
+  FRA: France
+  SEN: Senegal
+  IRQ: Iraq
+  NOR: Norway
+  ARG: Argentina
+  ALG: Algeria
+  AUT: Austria
+  JOR: Jordan
+  POR: Portugal
+  COD: DR Congo
+  UZB: Uzbekistan
+  COL: Colombia
+  ENG: England
+  CRO: Croatia
+  GHA: Ghana
+  PAN: Panama
+
+flag_emojis:
+  MEX: 🇲🇽
+  RSA: 🇿🇦
+  KOR: 🇰🇷
+  CZE: 🇨🇿
+  CAN: 🇨🇦
+  BIH: 🇧🇦
+  QAT: 🇶🇦
+  SUI: 🇨🇭
+  BRA: 🇧🇷
+  MAR: 🇲🇦
+  HAI: 🇭🇹
+  SCO: 🏴󠁧󠁢󠁳󠁣󠁴󠁿
+  USA: 🇺🇸
+  PAR: 🇵🇾
+  AUS: 🇦🇺
+  TUR: 🇹🇷
+  GER: 🇩🇪
+  CUW: 🇨🇼
+  CIV: 🇨🇮
+  ECU: 🇪🇨
+  NED: 🇳🇱
+  JPN: 🇯🇵
+  SWE: 🇸🇪
+  TUN: 🇹🇳
+  BEL: 🇧🇪
+  EGY: 🇪🇬
+  IRN: 🇮🇷
+  NZL: 🇳🇿
+  ESP: 🇪🇸
+  CPV: 🇨🇻
+  KSA: 🇸🇦
+  URU: 🇺🇾
+  FRA: 🇫🇷
+  SEN: 🇸🇳
+  IRQ: 🇮🇶
+  NOR: 🇳🇴
+  ARG: 🇦🇷
+  ALG: 🇩🇿
+  AUT: 🇦🇹
+  JOR: 🇯🇴
+  POR: 🇵🇹
+  COD: 🇨🇩
+  UZB: 🇺🇿
+  COL: 🇨🇴
+  ENG: 🏴󠁧󠁢󠁥󠁮󠁧󠁿
+  CRO: 🇭🇷
+  GHA: 🇬🇭
+  PAN: 🇵🇦

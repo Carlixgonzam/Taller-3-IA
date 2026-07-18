@@ -1,0 +1,14 @@
+[project]
+name = "taller-mundial-logica"
+version = "1.0.0"
+description = "Taller de Logica — Mundial 2026 Fase de Grupos"
+requires-python = ">=3.12"
+dependencies = [
+    "ipykernel>=7.3.0",
+    "pytest>=8.0",
+    "pyyaml>=6.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
