@@ -59,9 +59,42 @@ def eliminate_iff(formula: Formula) -> Formula:
           For each type, apply eliminate_iff recursively to the operands,
           and only transform when you find an Iff.
     """
-    # === YOUR CODE HERE ===
-    # === END YOUR CODE ===
-    raise NotImplementedError("Implement eliminate_iff()")
+    # === INITIAL VERSION MI VERSION  ===
+    # def eliminate_iff(formula):
+    #     if isinstance(formula, Atom):
+    #         return formula
+    #     if isinstance(formula, Not):
+    #         if isinstance(formula.operand, Not):
+    #             return eliminate_iff(formula.operand.operand)
+    #         return Not(eliminate_iff(formula.operand))
+    #     if isinstance(formula, And):
+    #         return And(*(eliminate_iff(a) for a in formula.conjuncts))
+    #     if isinstance(formula, Or):
+    #         return Or(*(eliminate_iff(b) for b in formula.conjuncts))  
+    #     if isinstance(formula, Implies):
+    #     # no se
+    #     if isinstance(formula, Iff):
+    #         # return
+    #
+    # Prompts used to get to the final version:
+    # 1. "intenté implementar mi primera version de eliminate_iff, pero no tengo muy claro como puedo hacer implies 
+    #       ni como funciona la recursión en el ulitmo caso de iff
+    # === FINAL VERSION (active code) ===
+    if isinstance(formula, Atom):
+        return formula
+    if isinstance(formula, Not):
+        return Not(eliminate_iff(formula.operand))
+    if isinstance(formula, And):
+        return And(*(eliminate_iff(c) for c in formula.conjuncts))
+    if isinstance(formula, Or):
+        return Or(*(eliminate_iff(d) for d in formula.disjuncts))
+    if isinstance(formula, Implies):
+        return Implies(eliminate_iff(formula.antecedent), eliminate_iff(formula.consequent))
+    if isinstance(formula, Iff):
+        left = eliminate_iff(formula.left)
+        right = eliminate_iff(formula.right)
+        return And(Implies(left, right), Implies(right, left))
+    return formula
 
 
 def eliminate_implication(formula: Formula) -> Formula:
