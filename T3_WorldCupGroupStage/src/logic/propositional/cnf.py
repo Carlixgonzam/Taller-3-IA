@@ -174,6 +174,22 @@ def push_negation_inward(formula: Formula) -> Formula:
           so you need not handle those types.
     """
     # === YOUR CODE HERE ===
+    # aca si full mi version
+    if isinstance(formula, Atom):
+        return formula
+    if isinstance(formula, And):
+        return And(*(push_negation_inward(c) for c in formula.conjuncts))
+    if isinstance(formula, Or):
+        return Or(*(push_negation_inward(d) for d in formula.disjuncts))
+    if isinstance(formula, Not):
+        operand = formula.operand
+        if isinstance(operand, And):
+            return Or(*(push_negation_inward(Not(c)) for c in operand.conjuncts))
+        if isinstance(operand, Or):
+            return And(*(push_negation_inward(Not(d)) for d in operand.disjuncts))
+        return Not(push_negation_inward(operand))
+    return formula
+
     # === END YOUR CODE ===
     raise NotImplementedError("Implement push_negation_inward()")
 
@@ -200,8 +216,53 @@ def distribute_or_over_and(formula: Formula) -> Formula:
     Note: This function is called AFTER pushing negations inward,
           so you will only see Atom, Not(Atom), And, and Or.
     """
-    # === YOUR CODE HERE ===
-    # === END YOUR CODE ===
+    # === HISTORIAL DE DESARROLLO (distribute_or_over_and) ===
+    # Implementación propia; la IA no escribió código, solo corrió los tests,
+    # identificó la línea exacta del error y explicó por qué violaba la
+    # restricción de Or (mínimo 2 operandos), sin dar la corrección.
+    #
+    # v1 (mía, con bug): el "resto" de disyuntos siempre se envolvía en Or,
+    # incluso cuando solo quedaba 1 elemento tras remover el And encontrado:
+    #     resto = Or(*hijos)
+    # Bug: Or exige len(disjuncts) >= 2 (ver ast.py); con 1 solo elemento
+    # remanente (ej. Or(p, And(q, r))) esto lanzaba
+    # ValueError: Or requires at least 2 operands.
+    #
+    # Prompt 1 a la IA: "revisa mi función distribute or over and a ver si está correcta"
+    # Respuesta: corrió pytest -k DistributeOrOverAnd, mostró el traceback del
+    #     ValueError en "resto = Or(*hijos)" y preguntó qué fórmula representa
+    #     "el resto" cuando a la lista le queda un solo elemento, sin dar código.
+    #
+    # v2 / final (mía, corregida): distinguir el caso de 1 elemento restante.
+    #
+    # Prompt 2 a la IA: "listo mira la corrección que hice"
+    # Respuesta: confirmó con pytest que el bug quedó resuelto (4/6 tests);
+    #     los 2 restantes fallaban por NotImplementedError de flatten (no
+    #     implementada aún), no por esta función, y lo verificó aparte
+    #     comprobando equivalencia lógica completa en tabla de verdad.
+    # === FINAL VERSION (active code) ===
+    if isinstance(formula, Atom) or isinstance(formula, Not):
+        return formula
+    if isinstance(formula, And):
+        return And(*(distribute_or_over_and(c) for c in formula.conjuncts))
+    if isinstance(formula, Or):
+        hijos = [distribute_or_over_and(d) for d in formula.disjuncts]
+        for hijo in hijos:
+            if isinstance(hijo, And):
+                hijos.remove(hijo)
+                if len(hijos) == 0:
+                    return hijo
+                if len(hijos) == 1:
+                    resto = hijos[0]
+                else:
+                    resto = Or(*hijos)
+                distribucion = []
+                for c in hijo.conjuncts:
+                    nuevo_or = Or(c, resto)
+                    distribucion.append(distribute_or_over_and(nuevo_or))
+                return And(*distribucion)
+        return Or(*hijos)
+    return formula
     raise NotImplementedError("Implement distribute_or_over_and()")
 
 
@@ -226,7 +287,58 @@ def flatten(formula: Formula) -> Formula:
           Same for Or with its disjuncts.
           If only one element remains, return it directly.
     """
-    # === YOUR CODE HERE ===
+    # === HISTORIAL DE DESARROLLO (flatten) ===
+    # Implementación propia; la IA no escribió código, solo corrió los tests,
+    # identificó cuál caso fallaba y por qué, sin dar la corrección.
+    #
+    # v1 (mía, con bug): traté Not igual que Atom, devolviéndolo sin recursar
+    # en su interior:
+    #     if isinstance(formula, Atom) or isinstance(formula, Not):
+    #         return formula
+    # Bug: un Not puede envolver un And/Or anidado que también necesita
+    # aplanarse (ej. Not(And(And(a,b), c))); al no recursar, el And interno
+    # se quedaba sin aplanar.
+    #
+    # Prompt 1 a la IA: "listo ahora revisa mi funcion flatten"
+    # Respuesta: corrió pytest -k Flatten, mostró que test_flatten_not fallaba
+    #     (esperaba 3 conjuntos aplanados y solo había 2) y señaló que la rama
+    #     Not necesitaba separarse de Atom y recursar con flatten(formula.operand),
+    #     sin dar el código.
+    #
+    # v2 / final (mía, corregida): separé el caso Not del caso Atom.
+    #
+    # Prompt 2 a la IA: "ya hice la correción, ayudame a revisar que si está
+    #     bien y pon los comentarios de las correciones que me hiciste"
+    # Respuesta: confirmó con pytest (7/7 en Flatten, 42/42 en todo test_cnf.py
+    #     incluyendo el pipeline to_cnf) que la corrección fue suficiente.
+    # === FINAL VERSION (active code) ===
+    if isinstance(formula, Atom):
+        return formula
+    if isinstance(formula, Not):
+        return Not(flatten(formula.operand))
+    if isinstance(formula, And):
+        hijos = [flatten(c) for c in formula.conjuncts]
+        nuevos_hijos = []
+        for hijo in hijos:
+            if isinstance(hijo, And):
+                nuevos_hijos.extend(hijo.conjuncts)
+            else:
+                nuevos_hijos.append(hijo)
+        if len(nuevos_hijos) == 1:
+            return nuevos_hijos[0]
+        return And(*nuevos_hijos)
+    if isinstance(formula, Or):
+        hijos = [flatten(d) for d in formula.disjuncts]
+        nuevos_hijos = []
+        for hijo in hijos:
+            if isinstance(hijo, Or):
+                nuevos_hijos.extend(hijo.disjuncts)
+            else:
+                nuevos_hijos.append(hijo)
+        if len(nuevos_hijos) == 1:
+            return nuevos_hijos[0]
+        return Or(*nuevos_hijos)
+    return formula
     # === END YOUR CODE ===
     raise NotImplementedError("Implement flatten()")
 
