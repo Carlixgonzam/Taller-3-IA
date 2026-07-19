@@ -7,7 +7,6 @@ from __future__ import annotations
 
 from src.logic.propositional.ast import And, Atom, Formula, Iff, Implies, Not, Or
 
-
 # --- GUIDED FUNCTION PROVIDED IN FULL ---
 
 
@@ -70,14 +69,14 @@ def eliminate_iff(formula: Formula) -> Formula:
     #     if isinstance(formula, And):
     #         return And(*(eliminate_iff(a) for a in formula.conjuncts))
     #     if isinstance(formula, Or):
-    #         return Or(*(eliminate_iff(b) for b in formula.conjuncts))  
+    #         return Or(*(eliminate_iff(b) for b in formula.conjuncts))
     #     if isinstance(formula, Implies):
     #     # no se
     #     if isinstance(formula, Iff):
     #         # return
     #
     # Prompts used to get to the final version:
-    # 1. "intenté implementar mi primera version de eliminate_iff, pero no tengo muy claro como puedo hacer implies 
+    # 1. "intenté implementar mi primera version de eliminate_iff, pero no tengo muy claro como puedo hacer implies
     #       ni como funciona la recursión en el ulitmo caso de iff
     # === FINAL VERSION (active code) ===
     if isinstance(formula, Atom):
@@ -89,7 +88,9 @@ def eliminate_iff(formula: Formula) -> Formula:
     if isinstance(formula, Or):
         return Or(*(eliminate_iff(d) for d in formula.disjuncts))
     if isinstance(formula, Implies):
-        return Implies(eliminate_iff(formula.antecedent), eliminate_iff(formula.consequent))
+        return Implies(
+            eliminate_iff(formula.antecedent), eliminate_iff(formula.consequent)
+        )
     if isinstance(formula, Iff):
         left = eliminate_iff(formula.left)
         right = eliminate_iff(formula.right)
@@ -113,9 +114,39 @@ def eliminate_implication(formula: Formula) -> Formula:
     Hint: Similar to eliminate_iff. Recurse and transform
           only Implies nodes.
     """
+
     # === YOUR CODE HERE ===
+    # Implementacion propia en 3 iteraciones; la IA no escribio codigo, solo
+    # señala en que rama estaba el error y que pregunta hacerme para corregirlo
+    #
+    # v1 (mía, incompleta): en la rama Implies reconstruía otro Implies
+    #     en lugar de transformarlo:
+    #         return Implies(eliminate_implication(a), eliminate_implication(b))
+    #     el bug no aplicaba la transformación, solo recursaba
+    #
+    # Prompt 1 a la IA: "listo ya hice mi versión eliminate_implication"
+    # Respuesta: señaló que la rama Implies no transformaba nada, sin dar el código.
+    #
+    # v2 (mía, todavía mal): confundí la fórmula con la de eliminate_iff:
+    #         return Or(Implies(a, b), Implies(b, a))
+    #     Bug: es la descomposición de un bicondicional, no de una implicación.
+    #
+    # Prompt 2 a la IA: "listo, ya hice la corrección que me dijiste"
+    if isinstance(formula, Atom):
+        return formula
+    if isinstance(formula, Not):
+        return Not(eliminate_implication(formula.operand))
+    if isinstance(formula, And):
+        return And(*(eliminate_implication(c) for c in formula.conjuncts))
+    if isinstance(formula, Or):
+        return Or(*(eliminate_implication(d) for d in formula.disjuncts))
+    if isinstance(formula, Implies):
+        a = eliminate_implication(formula.antecedent)
+        b = eliminate_implication(formula.consequent)
+        return Or(Not(a), b)
+    return formula
     # === END YOUR CODE ===
-    raise NotImplementedError("Implement eliminate_implication()")
+
 
 def push_negation_inward(formula: Formula) -> Formula:
     """
@@ -146,6 +177,7 @@ def push_negation_inward(formula: Formula) -> Formula:
     # === END YOUR CODE ===
     raise NotImplementedError("Implement push_negation_inward()")
 
+
 def distribute_or_over_and(formula: Formula) -> Formula:
     """
     Distribute Or over And to obtain CNF.
@@ -172,6 +204,7 @@ def distribute_or_over_and(formula: Formula) -> Formula:
     # === END YOUR CODE ===
     raise NotImplementedError("Implement distribute_or_over_and()")
 
+
 def flatten(formula: Formula) -> Formula:
     """
     Flatten nested conjunctions and disjunctions.
@@ -196,6 +229,7 @@ def flatten(formula: Formula) -> Formula:
     # === YOUR CODE HERE ===
     # === END YOUR CODE ===
     raise NotImplementedError("Implement flatten()")
+
 
 # --- FULL PIPELINE ---
 
