@@ -31,6 +31,19 @@ def get_all_models(atoms: set[str]) -> list[dict[str, bool]]:
           Each bit corresponds to the truth value of an atom.
     """
     # === YOUR CODE HERE ===
+    models = []
+    n = len(atoms)
+    list_atoms = list(atoms)
+    for i in range(2 ** n):
+        model = {}
+        binary = bin(i)[2:].zfill(n)
+        for j in range(n):
+            model[list_atoms[j]] = True if binary[j] == '1' else False
+        models.append(model)
+    return models
+
+
+
     # === END YOUR CODE ===
     raise NotImplementedError("Implement get_all_models()")
 
