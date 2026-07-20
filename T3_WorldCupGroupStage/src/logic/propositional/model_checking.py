@@ -43,11 +43,6 @@ def get_all_models(atoms: set[str]) -> list[dict[str, bool]]:
     return models
 
 
-
-    # === END YOUR CODE ===
-    raise NotImplementedError("Implement get_all_models()")
-
-
 def check_satisfiable(formula: Formula) -> tuple[bool, dict[str, bool] | None]:
     """
     Determine whether a formula is satisfiable.
@@ -67,8 +62,12 @@ def check_satisfiable(formula: Formula) -> tuple[bool, dict[str, bool] | None]:
           the formula on each using evaluate().
     """
     # === YOUR CODE HERE ===
-    # === END YOUR CODE ===
-    raise NotImplementedError("Implement check_satisfiable()")
+    atoms = get_atoms(formula)
+    models = get_all_models(atoms)
+    for model in models:
+        if evaluate(formula, model):
+            return True, model
+    return False, None
 
 
 def check_valid(formula: Formula) -> bool:
@@ -89,8 +88,8 @@ def check_valid(formula: Formula) -> bool:
           Alternatively, check that it is true in ALL models.
     """
     # === YOUR CODE HERE ===
+    return not check_satisfiable(Not(formula))[0]
     # === END YOUR CODE ===
-    raise NotImplementedError("Implement check_valid()")
 
 
 def check_entailment(kb: list[Formula], query: Formula) -> bool:
@@ -114,8 +113,8 @@ def check_entailment(kb: list[Formula], query: Formula) -> bool:
           and the query is false.
     """
     # === YOUR CODE HERE ===
+    return not check_satisfiable(And(*kb, Not(query)))[0]
     # === END YOUR CODE ===
-    raise NotImplementedError("Implement check_entailment()")
 
 
 def truth_table(formula: Formula) -> list[tuple[dict[str, bool], bool]]:
@@ -138,5 +137,11 @@ def truth_table(formula: Formula) -> list[tuple[dict[str, bool], bool]]:
     Hint: Combine get_all_models() and evaluate().
     """
     # === YOUR CODE HERE ===
+    atoms = get_atoms(formula)
+    models = get_all_models(atoms)
+    table = []
+    for model in models:
+        table.append((model, evaluate(formula, model)))
+    return table
     # === END YOUR CODE ===
-    raise NotImplementedError("Implement truth_table()")
+    
