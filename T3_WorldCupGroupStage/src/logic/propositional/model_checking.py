@@ -113,6 +113,9 @@ def check_entailment(kb: list[Formula], query: Formula) -> bool:
           and the query is false.
     """
     # === YOUR CODE HERE ===
+    if len(kb) == 0:
+        return check_valid(query)
+
     return not check_satisfiable(And(*kb, Not(query)))[0]
     # === END YOUR CODE ===
 
