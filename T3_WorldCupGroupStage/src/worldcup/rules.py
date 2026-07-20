@@ -22,8 +22,28 @@ def points(world: World, team: str) -> int:
     Win = 3, draw = 1, loss = 0.
     """
     # === YOUR CODE HERE ===
+    pts = 0
+
+    for match in world.matches_involving(team):
+
+        if match.home == team:
+
+            if match.home_goals > match.away_goals:
+                pts += 3
+
+            elif match.home_goals == match.away_goals:
+                pts += 1
+
+        else:
+
+            if match.away_goals > match.home_goals:
+                pts += 3
+
+            elif match.home_goals == match.away_goals:
+                pts += 1
+                
+    return pts
     # === END YOUR CODE ===
-    raise NotImplementedError("Implement points()")
 
 
 def goal_difference(world: World, team: str) -> int:
@@ -31,8 +51,23 @@ def goal_difference(world: World, team: str) -> int:
     Goal difference (GF - GA) for `team` in this completed scenario.
     """
     # === YOUR CODE HERE ===
+    gf = 0
+    ga = 0
+
+    for match in world.matches_involving(team):
+
+        if match.home == team:
+
+            gf += match.home_goals
+            ga += match.away_goals
+
+        else:
+
+            gf += match.away_goals
+            ga += match.home_goals
+
+    return gf - ga
     # === END YOUR CODE ===
-    raise NotImplementedError("Implement goal_difference()")
 
 
 def teams_below(world: World, team: str) -> int:
@@ -40,8 +75,26 @@ def teams_below(world: World, team: str) -> int:
     How many group rivals finish strictly below `team` on (points, then GD).
     """
     # === YOUR CODE HERE ===
+    below = 0
+
+    my_points = points(world, team)
+    my_gd = goal_difference(world, team)
+
+    for rival in world.group_rivals(team):
+
+        rival_points = points(world, rival)
+        rival_gd = goal_difference(world, rival)
+
+        if my_points > rival_points:
+
+            below += 1
+
+        elif my_points == rival_points and my_gd > rival_gd:
+
+            below += 1
+
+    return below
     # === END YOUR CODE ===
-    raise NotImplementedError("Implement teams_below()")
 
 
 def teams_above(world: World, team: str) -> int:
@@ -49,9 +102,30 @@ def teams_above(world: World, team: str) -> int:
     How many group rivals finish strictly above `team` on (points, then GD).
     """
     # === YOUR CODE HERE ===
-    # === END YOUR CODE ===
-    raise NotImplementedError("Implement teams_above()")
+    above = 0
 
+    my_points = points(world, team)
+    my_gd = goal_difference(world, team)
+
+    for rival in world.group_rivals(team):
+
+        rival_points = points(world, rival)
+        rival_gd = goal_difference(world, rival)
+
+        if rival_points > my_points:
+
+            above += 1
+
+        elif rival_points == my_points and rival_gd > my_gd:
+
+            above += 1
+
+    return above
+    # === END YOUR CODE ===
+
+
+def clasifica(world, team):
+    return teams_below(world, team) >= 2
 
 def definitely_qualified(
     engine: ScenarioEngine,
@@ -65,8 +139,11 @@ def definitely_qualified(
     Hint: `engine.holds_in_all(pred, state)` where pred(world) -> bool.
     """
     # === YOUR CODE HERE ===
+    def clasifica(world):
+        return teams_below(world, team) >= 2
+
+    return engine.holds_in_all(clasifica, state)
     # === END YOUR CODE ===
-    raise NotImplementedError("Implement definitely_qualified()")
 
 
 def definitely_eliminated(
@@ -79,8 +156,11 @@ def definitely_eliminated(
     in EVERY scenario, at least 2 rivals finish strictly above on (pts, GD).
     """
     # === YOUR CODE HERE ===
+    def eliminado(world):
+        return teams_above(world, team) >= 2
+
+    return engine.holds_in_all(eliminado, state)
     # === END YOUR CODE ===
-    raise NotImplementedError("Implement definitely_eliminated()")
 
 
 def register_rules(engine: ScenarioEngine) -> None:
