@@ -124,9 +124,6 @@ def teams_above(world: World, team: str) -> int:
     # === END YOUR CODE ===
 
 
-def clasifica(world, team):
-    return teams_below(world, team) >= 2
-
 def definitely_qualified(
     engine: ScenarioEngine,
     state: PartialState,
